@@ -12,7 +12,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f'Logged in {self.user} | {self.user.id}')
-        node: wavelink.Node = wavelink.Node(uri=ip_add, password=password)
+        node: wavelink.Node = wavelink.Node(uri=ip_add, password=password) #YOUR IP AND PASS FOR LAVALINK
         await wavelink.NodePool.connect(client=self, nodes=[node])
         print("Lavalink Connected!")
         await self.load_cogs()  # Call your load_cogs function here
