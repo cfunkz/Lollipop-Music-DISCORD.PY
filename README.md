@@ -17,7 +17,7 @@ This is a Python Discord bot cog that provides music-related commands for your s
 Before you can run the Music Bot, make sure you have the following dependencies installed:
 
 - [Python](https://www.python.org/) (Python 3.7 or higher)
-- [discord-py-interactions](https://github.com/Rapptz/discord-py-interactions)
+- [discord-py](https://github.com/Rapptz/discord.py)
 - [wavelink](https://github.com/PythonistaGuild/Wavelink)
 
 ## Installation
