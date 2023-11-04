@@ -53,4 +53,4 @@ This cog is built using the [discord.py](https://github.com/Rapptz/discord.py), 
 
 ## License
 
-This code is available under the MIT License. Feel free to use, modify, and distribute it as you see fit.
+This code is available under the Apache 2.0 License. Contact me for any details through discord/email or github.
