@@ -1,6 +1,7 @@
 # Music Bot Discord Cog
 
 This is a Python Discord bot cog that provides music-related commands for your server with buttons included. This cog is designed to be used with the [discord.py](https://github.com/Rapptz/discord.py) library and the [wavelink](https://github.com/PythonistaGuild/Wavelink) library for audio streaming.
+**THIS REQUIRES LAVALINK SERVER SETUP BEFOREHAND.. ITS EASY TO DO. RESEARCH!**
 
 ## Features
 
@@ -19,6 +20,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 - [Python](https://www.python.org/) (Python 3.7 or higher)
 - [discord-py](https://github.com/Rapptz/discord.py)
 - [wavelink](https://github.com/PythonistaGuild/Wavelink)
+- [Lavalink](https://github.com/lavalink-devs/Lavalink)
 
 ## Installation
 
