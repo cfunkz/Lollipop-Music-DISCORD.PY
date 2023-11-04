@@ -21,7 +21,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 - [Python](https://www.python.org/) (Python 3.7 or higher)
 - [discord-py](https://github.com/Rapptz/discord.py)
 - [wavelink](https://github.com/PythonistaGuild/Wavelink)
-- [Lavalink](https://github.com/lavalink-devs/Lavalink)
+- [Lavalink](https://github.com/lavalink-devs/Lavalink) server running. VPS or Home PC.
 
 ## Installation
 
