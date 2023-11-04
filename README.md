@@ -49,7 +49,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 
 ## Credits
 
-This cog is built using the [discord.py](https://github.com/Rapptz/discord.py) and [wavelink](https://github.com/PythonistaGuild/Wavelink) libraries. Special thanks to the developers of these libraries for making it possible to create such functionality.
+This cog is built using the [discord.py](https://github.com/Rapptz/discord.py), [wavelink](https://github.com/PythonistaGuild/Wavelink) and [Lavalink](https://github.com/lavalink-devs/Lavalink) libraries. Special thanks to the developers of these libraries for making it possible to create such functionality.
 
 ## License
 
