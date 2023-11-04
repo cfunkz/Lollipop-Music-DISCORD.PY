@@ -1,6 +1,6 @@
 # Interactive Discord.py Music Bot
 
-This is a Python Discord bot that provides music-related commands for your server with buttons included. This bot is designed to be used with the [discord.py](https://github.com/Rapptz/discord.py), [Lavalink](https://github.com/lavalink-devs/Lavalink) library and the [wavelink](https://github.com/PythonistaGuild/Wavelink) library for audio streaming and processing.
+This is a Python Discord bot that provides music-related commands for your server with buttons included. This bot is designed to be used with the [discord.py](https://github.com/Rapptz/discord.py), [Lavalink](https://github.com/lavalink-devs/Lavalink) library and the [Wavelink](https://github.com/PythonistaGuild/Wavelink) library for audio streaming and processing.
 
 # **THIS REQUIRES LAVALINK SERVER SETUP BEFOREHAND.. ITS EASY TO DO RESEARCH!**
 
@@ -20,7 +20,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 
 - [Python](https://www.python.org/) (Python 3.7 or higher)
 - [discord-py](https://github.com/Rapptz/discord.py)
-- [wavelink](https://github.com/PythonistaGuild/Wavelink)
+- [Wavelink](https://github.com/PythonistaGuild/Wavelink)
 - [Lavalink](https://github.com/lavalink-devs/Lavalink) server running. VPS or Home PC.
 
 ## Installation
