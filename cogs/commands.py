@@ -2,9 +2,8 @@ import discord
 from discord.ext import commands
 import wavelink
 from discord import Embed
-from view import PlaylistView, PlaylistPlayingView, PlayingView
+from view import PlaylistView, PlaylistPlayingView, PlayingView, InviteButton, QueueView
 import asyncio
-
 
 
 class MusicCommands(commands.Cog):
@@ -55,10 +54,16 @@ class MusicCommands(commands.Cog):
       if not player:
           player: wavelink.Player = await channel.connect(cls=wavelink.Player)
           player.autoplay = True
-          if "list" in query:
+          if "&list" in query or "?list" in query:
               playlist = await wavelink.YouTubePlaylist.convert(ctx, query)
-              embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n`{playlist.tracks[0].title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?")
-              await ctx.send(embed=embed, view=PlaylistView(ctx, player, playlist))
+              if "index=" in query:
+                  index = (int(query.split("&index=")[1]) - 1) if "&index=" in query else 0
+                  track = playlist.tracks[index]
+              else:
+                  track = playlist.tracks[0]
+              embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?")
+              await ctx.send(embed=embed, view=PlaylistView(ctx, player, playlist, track))
+                
           else:
               await player.play(tracks[0])
               await asyncio.sleep(1)
@@ -68,12 +73,17 @@ class MusicCommands(commands.Cog):
                 # Call the function to update the message
               await self.update_now_playing(ctx, message)
       else:
-          if "list" in query:
+          if "&list" in query or "?list" in query:
               playlist = await wavelink.YouTubePlaylist.convert(ctx, query)
-              embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n\n`{playlist.tracks[0].title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?",color=discord.Color.blue())
+              if "index=" in query:
+                  index = (int(query.split("&index=")[1]) - 1) if "&index=" in query else 0
+                  track = playlist.tracks[index]
+              else:
+                  track = playlist.tracks[0]
+              embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n\n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?",color=discord.Color.blue())
               embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
               embed.set_thumbnail(url=playlist.tracks[0].thumb)
-              await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist))
+              await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist, track))
           else:
               player.queue(tracks[0])
               embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
@@ -94,7 +104,17 @@ class MusicCommands(commands.Cog):
           await self.update_now_playing(ctx, message)
       else:
           await ctx.send('Nothing is currently playing.')
-        
+
+  @commands.guild_only()
+  @commands.hybrid_command(name="queue")
+  async def _queue(self, ctx):
+      player: wavelink.Player = ctx.guild.voice_client
+      if player and player.is_playing():
+          view = QueueView(ctx, player)
+          await view.show_queue_page()
+      else:
+          await ctx.send("The queue is empty or the bot is not currently playing any music.")
+  
   @commands.guild_only()
   @commands.hybrid_command(name="skip")
   async def _skip(self, ctx):
@@ -205,6 +225,16 @@ class MusicCommands(commands.Cog):
       else:
         await ctx.send(f"No player connected.") 
 
+
+  @commands.hybrid_command(name='about', description="Information about the bot.")
+  @commands.cooldown(1, 15, commands.BucketType.user)
+  async def _about(self, ctx):
+      guild_count = len(self.bot.guilds)
+      invite_link = discord.utils.oauth_url(self.bot.user.id, permissions=discord.Permissions(permissions=964525804865))
+      server_link = "https://discord.gg/atlasdev"
+      embed=Embed(description="[Invite Me](" + invite_link + ") to your server!\n[Support](" + server_link + ")\n\n I'm a bot built with python by **cfunkz#6969**.", color=discord.Color.green())
+      embed.add_field(name='420 GUILDS', value=guild_count)
+      await ctx.send(embed=embed, view=InviteButton(str(invite_link)))
 
 async def setup(bot):
     cog = MusicCommands(bot)
