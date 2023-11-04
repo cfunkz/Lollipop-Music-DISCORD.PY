@@ -12,19 +12,22 @@ This is a Python Discord bot cog that provides music-related commands for your s
 - Shuffle the queue.
 - Repeat a song or the entire queue.
 
-## Prerequisites
+## Dependencies
 
-Before using this cog, make sure you have the following installed:
+Before you can run the Music Bot, make sure you have the following dependencies installed:
 
-- Python
-- [discord.py](https://github.com/Rapptz/discord.py)
+- [Python](https://www.python.org/) (Python 3.7 or higher)
+- [discord-py-interactions](https://github.com/Rapptz/discord-py-interactions)
 - [wavelink](https://github.com/PythonistaGuild/Wavelink)
 
 ## Installation
 
-1. Download the `MusicCommands` class from this repository.
-2. Add it to your Discord bot project or bot's cog folder.
-3. Modify your bot's code to load this cog. You can use `bot.load_extension('cog_file_name')` to load it.
+1. Download the Music Bot source code from this repository.
+
+2. Set up and configure the necessary dependencies and environment for the bot, such as Python and the required libraries.
+
+3. Run the bot using the appropriate command or script to start it.
+
 
 ## Usage
 
