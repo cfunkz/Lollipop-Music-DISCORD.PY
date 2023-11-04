@@ -26,7 +26,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 
 2. Set up and configure the necessary dependencies and environment for the bot, such as Python and the required libraries.
 
-3. Run the bot using the appropriate command or script to start it. Should work on replit also.
+3. Run the bot using the appropriate command or script to start it. Should work on replit also because I am hosting my bot on replit and it works.
 
 
 ## Usage
