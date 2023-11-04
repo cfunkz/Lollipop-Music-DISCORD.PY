@@ -6,11 +6,13 @@ import wavelink
 import asyncio
 
 class PlaylistView(View):
-    def __init__(self, ctx, player, playlist):
+    def __init__(self, ctx, player, playlist, track):
         super().__init__(timeout=120)
         self.player = player
-        self.playlist = playlist
         self.user_id = ctx.author.id
+        self.track = track
+        self.ctx = ctx
+        self.playlist = playlist
       
     async def on_timeout(self):
         self.stop()
@@ -19,10 +21,10 @@ class PlaylistView(View):
     async def add_one(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.user_id:
             return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
-        await self.player.play(self.playlist.tracks[0])
-        embed = Embed(title="🎶 Now playing", description=f"`{self.playlist.tracks[0].title}`", color=discord.Color.blue())
+        await self.player.play(self.track)
+        embed = Embed(title="🎶 Now playing", description=f"`{self.track.title}`", color=discord.Color.blue())
         embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
-        embed.set_thumbnail(url=self.playlist.tracks[0].thumb)
+        embed.set_thumbnail(url=self.track.thumb)
         await interaction.response.send_message(embed=embed, view=PlayingView(self.ctx, self.player))
         self.stop()
   
@@ -39,11 +41,12 @@ class PlaylistView(View):
         self.stop()
 
 class PlaylistPlayingView(View):
-  def __init__(self, ctx, player, playlist):
+  def __init__(self, ctx, player, playlist, track):
       super().__init__(timeout=120)
       self.player = player
-      self.playlist = playlist
+      self.track = track
       self.user_id = ctx.author.id
+      self.playlist = playlist
 
   async def on_timeout(self):
       self.stop()
@@ -53,9 +56,9 @@ class PlaylistPlayingView(View):
   async def add_one2(self, interaction: discord.Interaction, button: discord.ui.Button):
       if interaction.user.id != self.user_id:
           return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
-      self.player.queue(self.playlist.tracks[0])
-      embed = Embed(title=f"➕ Added to queue", description=f"`{self.playlist.tracks[0].title}`", color=discord.Color.blue())
-      embed.set_thumbnail(url=self.playlist.tracks[0].thumb)
+      self.player.queue(self.track)
+      embed = Embed(title=f"➕ Added to queue", description=f"`{self.track.title}`", color=discord.Color.blue())
+      embed.set_thumbnail(url=self.track.thumb)
       embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
       await interaction.response.send_message(embed=embed)
       self.stop()
@@ -184,3 +187,15 @@ class PlayingView(View):
         return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
       await self.player.disconnect()
       await interaction.response.send_message("```🚫 Disconnected```", ephemeral=True)
+
+
+class InviteButton(View):
+  def __init__(self, inv: str):
+      super().__init__()
+      self.inv = inv
+      self.add_item(discord.ui.Button(label = "Invite", url = self.inv))
+
+  @button(label="Support", style=discord.ButtonStyle.blurple)
+  async def supportButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+      url = "https://discord.gg/atlasdev"
+      await interaction.response.send_message(url, ephemeral=True)
