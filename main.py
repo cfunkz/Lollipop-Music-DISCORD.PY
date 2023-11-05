@@ -1,18 +1,17 @@
 import discord
 from discord.ext import commands
-from discord import app_commands
 import wavelink
-from config import dtoken, ip_add, password
+from config import dtoken, ip_add, password, freeURL, freePASS
 
 intents = discord.Intents.all()
 
 class Bot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=commands.when_mentioned_or('420 '), intents=intents, activity = discord.Game(name="/help"))
+        super().__init__(command_prefix=commands.when_mentioned_or('420 '), intents=intents, activity = discord.Game(name="/help"), help_command=None)
 
     async def on_ready(self):
         print(f'Logged in {self.user} | {self.user.id}')
-        node: wavelink.Node = wavelink.Node(uri=ip_add, password=password) #YOUR IP AND PASS FOR LAVALINK
+        node: wavelink.Node = wavelink.Node(uri=freeURL, password=freePASS)
         await wavelink.NodePool.connect(client=self, nodes=[node])
         print("Lavalink Connected!")
         await self.load_cogs()  # Call your load_cogs function here
