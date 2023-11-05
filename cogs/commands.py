@@ -6,6 +6,7 @@ from view import PlaylistView, PlaylistPlayingView, PlayingView, InviteButton, Q
 import asyncio
 
 
+
 class MusicCommands(commands.Cog):
   def __init__(self, bot):
       self.bot = bot
@@ -106,14 +107,27 @@ class MusicCommands(commands.Cog):
           await ctx.send('Nothing is currently playing.')
 
   @commands.guild_only()
-  @commands.hybrid_command(name="queue")
+  @commands.command(name="queue")
   async def _queue(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
-      if player and player.is_playing():
-          view = QueueView(ctx, player)
-          await view.show_queue_page()
-      else:
-          await ctx.send("The queue is empty or the bot is not currently playing any music.")
+      if not player or not player.is_connected:
+          await ctx.send("I am not connected to a voice channel.")
+          return
+      if not player.queue:
+          await ctx.send("The queue is empty.")
+          return
+      # Get the first 10 items in the queue and number them
+      queue_items = []
+      for i, item in enumerate(player.queue):
+          if i >= 10:
+              break
+          queue_items.append(f"```{i + 1}. {str(item)}```")
+      # Join the numbered items with "\n" separator
+      queue_str = "\n".join(queue_items)
+      embed = Embed(title="🎵 Queue (First 10 Songs)")
+      embed.add_field(name="Queue:", value=queue_str, inline=False)
+      embed.set_footer(text=f"{len(player.queue)} songs in queue.")
+      await ctx.send(embed=embed)
   
   @commands.guild_only()
   @commands.hybrid_command(name="skip")
@@ -225,7 +239,6 @@ class MusicCommands(commands.Cog):
       else:
         await ctx.send(f"No player connected.") 
 
-
   @commands.hybrid_command(name='about', description="Information about the bot.")
   @commands.cooldown(1, 15, commands.BucketType.user)
   async def _about(self, ctx):
@@ -235,6 +248,30 @@ class MusicCommands(commands.Cog):
       embed=Embed(description="[Invite Me](" + invite_link + ") to your server!\n[Support](" + server_link + ")\n\n I'm a bot built with python by **cfunkz#6969**.", color=discord.Color.green())
       embed.add_field(name='420 GUILDS', value=guild_count)
       await ctx.send(embed=embed, view=InviteButton(str(invite_link)))
+
+  @commands.hybrid_command(name='help', description='Brings out help panel or help for specific command e.g., `420 help start`', brief='Help Panel')
+  @commands.cooldown(1, 1, commands.BucketType.user)
+  async def _help(self, ctx, *, command_or_item=None):
+      if command_or_item:
+          # Check if the query matches a command
+          command = self.bot.get_command(command_or_item)
+          if command:
+              embed = Embed(title=f"Command: {command.name}", description=command.description)
+              embed.set_footer(text="Type /help to get the general help panel")
+              await ctx.send(embed=embed)
+              return
+          await ctx.send(f"No command named '{command_or_item}' found.")
+          return
+
+      # Display general help panel
+      embed = Embed(title="📚 Help Command", description="Here are some available commands:")
+      for cog in self.bot.cogs.values():
+          commands_list = [f"`{command.name}`" for command in cog.get_commands()]
+          if commands_list:
+              embed.add_field(name=f"**{cog.qualified_name}**", value="\n".join(commands_list), inline=False)
+      embed.set_footer(text="Type /help <command name> to get the description of a specific command")
+      message = await ctx.send(embed=embed, ephemeral=True)
+
 
 async def setup(bot):
     cog = MusicCommands(bot)
