@@ -56,7 +56,10 @@ class PlaylistPlayingView(View):
   async def add_one2(self, interaction: discord.Interaction, button: discord.ui.Button):
       if interaction.user.id != self.user_id:
           return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
-      self.player.queue(self.track)
+      if self.player.is_paused():
+          self.player.queue(self.track)
+      else:
+          await self.player.play(self.track)
       embed = Embed(title=f"➕ Added to queue", description=f"`{self.track.title}`", color=discord.Color.blue())
       embed.set_image(url=self.track.thumb)
       embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
@@ -67,6 +70,11 @@ class PlaylistPlayingView(View):
   async def add_all_queue2(self, interaction: discord.Interaction, button: discord.ui.Button):
       if interaction.user.id != self.user_id:
           return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
+      if self.player.is_paused():
+          self.player.queue(self.playlist)
+      else:
+          self.player.queue(self.playlist)
+          await self.player.play(self.playlist.tracks[0])
       self.player.queue(self.playlist)
       embed = Embed(title=f"{len(self.playlist.tracks)} Songs", description=f"Added to queue from `{self.playlist.name.title()}` playlist.", color=discord.Color.blue())
       embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
