@@ -105,7 +105,7 @@ class PlayingView(View):
         player: wavelink.Player = self.ctx.guild.voice_client
         if interaction.user.id != self.user_id:
             return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
-        if not player.is_playing():
+        if not player.is_playing() and player.current:
             await player.resume()
             await interaction.response.send_message("Resumed.", ephemeral=True)
         elif player.is_playing():
