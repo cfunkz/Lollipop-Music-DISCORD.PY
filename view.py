@@ -24,7 +24,7 @@ class PlaylistView(View):
         await self.player.play(self.track)
         embed = Embed(title="🎶 Now playing", description=f"`{self.track.title}`", color=discord.Color.blue())
         embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
-        embed.set_thumbnail(url=self.track.thumb)
+        embed.set_image(url=self.track.thumb)
         await interaction.response.send_message(embed=embed, view=PlayingView(self.ctx, self.player))
         self.stop()
   
@@ -36,7 +36,7 @@ class PlaylistView(View):
         await self.player.play(self.playlist.tracks[0])
         embed = Embed(title=f"{len(self.playlist.tracks)} Songs", description=f"Added to queue from `{self.playlist.name.title()}` playlist.", color=discord.Color.blue())
         embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
-        embed.set_thumbnail(url=self.playlist.tracks[0].thumb)
+        embed.set_image(url=self.playlist.tracks[0].thumb)
         await interaction.response.send_message(embed=embed)
         self.stop()
 
@@ -58,7 +58,7 @@ class PlaylistPlayingView(View):
           return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
       self.player.queue(self.track)
       embed = Embed(title=f"➕ Added to queue", description=f"`{self.track.title}`", color=discord.Color.blue())
-      embed.set_thumbnail(url=self.track.thumb)
+      embed.set_image(url=self.track.thumb)
       embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
       await interaction.response.send_message(embed=embed)
       self.stop()
@@ -70,7 +70,7 @@ class PlaylistPlayingView(View):
       self.player.queue(self.playlist)
       embed = Embed(title=f"{len(self.playlist.tracks)} Songs", description=f"Added to queue from `{self.playlist.name.title()}` playlist.", color=discord.Color.blue())
       embed.set_footer(text=f"{len(self.player.queue)} songs in the queue.")
-      embed.set_thumbnail(url=self.playlist.tracks[0].thumb)
+      embed.set_image(url=self.playlist.tracks[0].thumb)
       await interaction.response.send_message(embed=embed)
       self.stop()
 
@@ -188,7 +188,6 @@ class PlayingView(View):
       await self.player.disconnect()
       await interaction.response.send_message("```🚫 Disconnected```", ephemeral=True)
 
-
 class InviteButton(View):
   def __init__(self, inv: str):
       super().__init__()
@@ -199,3 +198,28 @@ class InviteButton(View):
   async def supportButton(self, interaction: discord.Interaction, button: discord.ui.Button):
       url = "https://discord.gg/atlasdev"
       await interaction.response.send_message(url, ephemeral=True)
+
+
+class QueueView(View):
+  def __init__(self, ctx, player):
+      super().__init__(timeout=None)
+      self.ctx = ctx
+      self.player = player
+      self.page = 0
+
+  async def show_queue_page(self):
+    queue = self.player.queue
+    total_pages = len(queue)
+
+  @button(style=discord.ButtonStyle.grey, emoji="⬅️")
+  async def prev_page(self):
+      if self.page > 0:
+          self.page -= 1
+          await self.show_queue_page()
+
+  @button(style=discord.ButtonStyle.grey, emoji="➡️")
+  async def next_page(self):
+      total_pages = (len(self.player.queue) - 1) // 10 + 1
+      if self.page < total_pages - 1:
+          self.page += 1
+          await self.show_queue_page()
