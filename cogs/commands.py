@@ -2,34 +2,17 @@ import discord
 from discord.ext import commands
 import wavelink
 from discord import Embed
-from view import PlaylistView, PlaylistPlayingView, PlayingView, InviteButton, QueueView
+from view import PlaylistView, PlaylistPlayingView, PlayingView, InviteButton
 import asyncio
-
 
 
 class MusicCommands(commands.Cog):
   def __init__(self, bot):
       self.bot = bot
 
-
-  @commands.Cog.listener() #Dont disconnect on update
-  async def on_voice_state_update(self, member, before, after):
-      # Check if the bot is in the same voice channel as the member
-      player: wavelink.Player = member.guild.voice_client
-      if player.is_connected():
-          if not player.is_playing():
-              # Bot is connected but not playing, and the queue is not empty
-              # Do not disconnect the bot
-              return
-  
-  async def create_progress_bar(self, current, total, length=20):
-    progress = int((current / total) * length)
-    bar = "▬" * progress + "🔘" + "▬" * (length - progress)
-    return bar
-
   async def format_time(self, seconds):
     minutes, seconds = divmod(seconds, 60)
-    return f"{int(minutes)} minutes and {int(seconds)} seconds"
+    return f"`{int(minutes)}:{int(seconds)}`"
 
   async def create_now_playing_embed(self, ctx, track):
     try:
@@ -37,26 +20,16 @@ class MusicCommands(commands.Cog):
         volume = player.volume
         duration_in_seconds = track.length / 1000  # Convert milliseconds to seconds
         current_time = player.position / 1000  # Convert milliseconds to seconds
-        time_left_str = await self.format_time(duration_in_seconds - current_time)
-        progress_bar = await self.create_progress_bar(current_time, duration_in_seconds)
-        embed = Embed(title="🎶 Now playing", description=f"`{track.title}`", color=discord.Color.blue())
+        time = await self.format_time(duration_in_seconds)
+        embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```{track.title}```", color=discord.Color.blue())
         embed.set_image(url=track.thumb)
-        embed.add_field(name="Progress", value=progress_bar, inline=False)
-        embed.add_field(name="Time Left", value=time_left_str, inline=False)
-        embed.add_field(name="Volume:", value=f"`{volume}/100`", inline=False)
+        embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"``{time}``", inline=True)
+        embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{volume}/100```", inline=True)
         embed.set_footer(text=f"{len(player.queue)} songs in queue.")
         return embed
     except:
-        return
-
-  async def update_now_playing(self, ctx, message):
-    player: wavelink.Player = ctx.guild.voice_client
-    while player and player.is_playing():
-        curr_track = player.current
-        embed = await self.create_now_playing_embed(ctx, curr_track)
-        await message.edit(embed=embed)  # Edit the existing message
-        await asyncio.sleep(5)  # Update every 5 seconds
-
+        return ctx.send("Error making embed")
+  
   @commands.guild_only()
   @commands.hybrid_command(name="play")
   async def _play(self, ctx, *, query):
@@ -74,16 +47,14 @@ class MusicCommands(commands.Cog):
               else:
                   track = playlist.tracks[0]
               embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?")
+              embed.set_thumbnail(url=track.thumb)
               await ctx.send(embed=embed, view=PlaylistView(ctx, player, playlist, track))
-                
           else:
               await player.play(tracks[0])
               await asyncio.sleep(1)
               curr_track = player.current
               embed = await self.create_now_playing_embed(ctx, curr_track)
               message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
-                # Call the function to update the message
-              await self.update_now_playing(ctx, message)
       else:
           if "&list" in query or "?list" in query:
               playlist = await wavelink.YouTubePlaylist.convert(ctx, query)
@@ -94,14 +65,20 @@ class MusicCommands(commands.Cog):
                   track = playlist.tracks[0]
               embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n\n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?",color=discord.Color.blue())
               embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
-              embed.set_thumbnail(url=playlist.tracks[0].thumb)
+              embed.set_thumbnail(url=track.thumb)
               await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist, track))
           else:
-              player.queue(tracks[0])
-              embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
-              embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
-              embed.set_thumbnail(url=tracks[0].thumb)
-              await ctx.send(embed=embed)
+              if player.is_paused():
+                  player.queue(tracks[0])
+                  embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
+                  embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
+                  embed.set_thumbnail(url=tracks[0].thumb)
+                  await ctx.send(embed=embed)
+              else:
+                  await player.play(tracks[0])
+                  curr_track = player.current
+                  embed = await self.create_now_playing_embed(ctx, curr_track)
+                  message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
             
   @commands.guild_only()
   @commands.hybrid_command(name="nowplaying")
@@ -112,8 +89,6 @@ class MusicCommands(commands.Cog):
           curr_track = player.current
           embed = await self.create_now_playing_embed(ctx, curr_track)
           message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
-          # Call the function to update the message
-          await self.update_now_playing(ctx, message)
       else:
           await ctx.send('Nothing is currently playing.')
 
