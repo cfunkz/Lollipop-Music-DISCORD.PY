@@ -46,6 +46,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 10. Adjust volume: `/volume <volume>` - Sets the volume of the bot (0-100%).
 11. Repeat all songs in the queue: `/repeatall` - Toggles repeat mode for the entire queue.
 12. Repeat the current song: `/repeat` - Toggles repeat mode for the current song.
+13. View queue: `/queue` - View current queue.
 
 ## Credits
 
