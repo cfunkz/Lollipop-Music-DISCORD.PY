@@ -11,6 +11,17 @@ class MusicCommands(commands.Cog):
   def __init__(self, bot):
       self.bot = bot
 
+
+  @commands.Cog.listener() #Dont disconnect on update
+  async def on_voice_state_update(self, member, before, after):
+      # Check if the bot is in the same voice channel as the member
+      player: wavelink.Player = member.guild.voice_client
+      if player.is_connected():
+          if not player.is_playing():
+              # Bot is connected but not playing, and the queue is not empty
+              # Do not disconnect the bot
+              return
+  
   async def create_progress_bar(self, current, total, length=20):
     progress = int((current / total) * length)
     bar = "▬" * progress + "🔘" + "▬" * (length - progress)
@@ -36,7 +47,7 @@ class MusicCommands(commands.Cog):
         embed.set_footer(text=f"{len(player.queue)} songs in queue.")
         return embed
     except:
-        await ctx.send("Error making embed!")
+        return
 
   async def update_now_playing(self, ctx, message):
     player: wavelink.Player = ctx.guild.voice_client
