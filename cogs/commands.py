@@ -276,7 +276,7 @@ class MusicCommands(commands.Cog):
       # Display general help panel
       embed = Embed(title="📚 Help Command", description="Here are some available commands:")
       for cog in self.bot.cogs.values():
-          commands_list = [f"`{command.name}`" for command in cog.get_commands()]
+          commands_list = [f"**{command.name}** - {command.description}" for command in cog.get_commands()]
           if commands_list:
               embed.add_field(name=f"**{cog.qualified_name}**", value="\n".join(commands_list), inline=False)
       embed.set_footer(text="Type /help <command name> to get the description of a specific command")
