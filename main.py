@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import wavelink
 from wavelink.ext import spotify
-from config import dtoken, freeURL, freePASS,S spotifyUSER, spotifyPASS
+from config import dtoken, freeURL, freePASS,S spotifyUSER, spotifySECRET
 
 intents = discord.Intents.all()
 
