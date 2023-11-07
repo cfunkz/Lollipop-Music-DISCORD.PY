@@ -72,7 +72,7 @@ class MusicCommands(commands.Cog):
               embed.set_thumbnail(url=track.thumb)
               await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist, track))
           else:
-              if player.is_playing() or if player.is_paused():
+              if player.is_playing() or player.is_paused():
                   player.queue(tracks[0])
                   embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
                   embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
