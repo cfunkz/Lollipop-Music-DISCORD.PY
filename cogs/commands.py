@@ -119,7 +119,7 @@ class MusicCommands(commands.Cog):
       embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{vc.volume}/100```", inline=True)
       embed.set_footer(text=f"{len(vc.queue)} songs in queue.")
       await ctx.send(embed=embed)
-      await vc.play(track)
+      return await vc.play(track)
 
   @commands.guild_only()
   @commands.hybrid_command(name="nowplaying", description="Show current player with current song playing.")
