@@ -108,8 +108,12 @@ class MusicCommands(commands.Cog):
         # otherwise put it in the queue...
         if not vc.is_playing() or not vc.is_paused():
             await vc.play(track, populate=True)
+            await ctx.send
         else:
             await vc.queue.put_wait(track)
+            curr_track = vc.current
+            embed = await self.create_now_playing_embed(ctx, curr_track)
+            message = await ctx.send(embed=embed, view=PlayingView(ctx, vc))
     except Exception as e:
         print(f"An error occurred: {e}")
         await ctx.send("An error occurred while connecting to spotify.")
