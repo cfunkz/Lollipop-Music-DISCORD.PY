@@ -34,6 +34,16 @@ class MusicCommands(commands.Cog):
         return embed
     except:
         return await ctx.send("Error making embed")
+
+  @commands.guild_only()
+  @commands.hybrid_command(name="join")
+  async def _connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel | None = None):
+      try:
+          channel = channel or ctx.author.channel.voice
+      except AttributeError:
+          return await ctx.send('No voice channel to connect to. Please either provide one or join one.')
+      player: wavelink.Player = await channel.connect(cls=wavelink.Player)
+      return player
   
   @commands.guild_only()
   @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
