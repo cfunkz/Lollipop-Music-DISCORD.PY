@@ -19,17 +19,20 @@ class MusicCommands(commands.Cog):
         return f"`{int(minutes)}:{int(seconds)}`"
 
   async def create_now_playing_embed(self, ctx, track):
-      player: wavelink.Player = ctx.guild.voice_client
-      volume = player.volume
-      duration_in_seconds = track.length / 1000  # Convert milliseconds to seconds
-      current_time = player.position / 1000  # Convert milliseconds to seconds
-      time = await self.format_time(duration_in_seconds)
-      embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```{track.title}```", color=discord.Color.blue())
-      embed.set_image(url=track.thumb)
-      embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"``{time}``", inline=True)
-      embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{volume}/100```", inline=True)
-      embed.set_footer(text=f"{len(player.queue)} songs in queue.")
-      return embed
+    try:
+        player: wavelink.Player = ctx.guild.voice_client
+        volume = player.volume
+        duration_in_seconds = track.length / 1000  # Convert milliseconds to seconds
+        current_time = player.position / 1000  # Convert milliseconds to seconds
+        time = await self.format_time(duration_in_seconds)
+        embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```{track.title}```", color=discord.Color.blue())
+        embed.set_image(url=track.thumb)
+        embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"``{time}``", inline=True)
+        embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{volume}/100```", inline=True)
+        embed.set_footer(text=f"{len(player.queue)} songs in queue.")
+        return embed
+    except:
+        return await ctx.send("Error making embed")
   
   @commands.guild_only()
   @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
@@ -40,33 +43,46 @@ class MusicCommands(commands.Cog):
       if not player:
           player: wavelink.Player = await channel.connect(cls=wavelink.Player)
           player.autoplay = True
-      if "&list" in query or "?list" in query:
-          playlist = await wavelink.YouTubePlaylist.convert(ctx, query)
-          if "index=" in query:
-              index = (int(query.split("&index=")[1]) - 1) if "&index=" in query else 0
-              track = playlist.tracks[index]
+          if "&list" in query or "?list" in query:
+              playlist = await wavelink.YouTubePlaylist.convert(ctx, query)
+              if "index=" in query:
+                  index = (int(query.split("&index=")[1]) - 1) if "&index=" in query else 0
+                  track = playlist.tracks[index]
+              else:
+                  track = playlist.tracks[0]
+              embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?")
+              embed.set_thumbnail(url=track.thumb)
+              await ctx.send(embed=embed, view=PlaylistView(ctx, player, playlist, track))
           else:
-              track = playlist.tracks[0]
-          embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue")
-          embed.set_thumbnail(url=track.thumb)
-          await ctx.send(embed=embed, view=PlaylistView(ctx, player, playlist, track))
-      elif player.is_playing() and not player.is_paused():
-          player.queue(tracks[0])
-          embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
-          embed.set_footer(text=f"{len(player.queue)} songs in the queue")
-          embed.set_thumbnail(url=tracks[0].thumb)
-          await ctx.send(embed=embed)
-      elif not player.is_playing() and not player.is_paused() and len(player.queue) == 0:
-          await player.play(tracks[0])
-          curr_track = player.current
-          embed = await self.create_now_playing_embed(ctx, curr_track)
-          message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
+              await player.play(tracks[0])
+              await asyncio.sleep(1)
+              curr_track = player.current
+              embed = await self.create_now_playing_embed(ctx, curr_track)
+              message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
       else:
-          player.queue(tracks[0])
-          embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
-          embed.set_footer(text=f"{len(player.queue)} songs in the queue")
-          embed.set_thumbnail(url=tracks[0].thumb)
-          await ctx.send(embed=embed)
+          if "&list" in query or "?list" in query:
+              playlist = await wavelink.YouTubePlaylist.convert(ctx, query)
+              if "index=" in query:
+                  index = (int(query.split("&index=")[1]) - 1) if "&index=" in query else 0
+                  track = playlist.tracks[index]
+              else:
+                  track = playlist.tracks[0]
+              embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n\n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue?",color=discord.Color.blue())
+              embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
+              embed.set_thumbnail(url=track.thumb)
+              await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist, track))
+          else:
+              if player.is_playing or if player.is_paused():
+                  player.queue(tracks[0])
+                  embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
+                  embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
+                  embed.set_thumbnail(url=tracks[0].thumb)
+                  await ctx.send(embed=embed)
+              else:
+                  await player.play(tracks[0])
+                  curr_track = player.current
+                  embed = await self.create_now_playing_embed(ctx, curr_track)
+                  message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
             
   @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
   @commands.guild_only()
@@ -140,7 +156,7 @@ class MusicCommands(commands.Cog):
       if player and len(player.queue.history) > 0:
           prev_track = player.queue.history[-2]  # Get the last song in the history
           await player.play(prev_track)
-          await ctx.send(f"```Playing {prev_track.title}```")
+          await ctx.send(f"```Playing **{prev_track.title}**```")
       else:
           await ctx.send("```⛔ No previous track to play.```")
         
