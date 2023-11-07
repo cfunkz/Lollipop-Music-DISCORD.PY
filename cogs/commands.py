@@ -72,17 +72,25 @@ class MusicCommands(commands.Cog):
               embed.set_thumbnail(url=track.thumb)
               await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist, track))
           else:
-              if player.is_paused():
+              if player.is_playing():
+                  # The player is currently playing and not paused, so we can queue the track.
                   player.queue(tracks[0])
                   embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
                   embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
                   embed.set_thumbnail(url=tracks[0].thumb)
                   await ctx.send(embed=embed)
-              else:
+              elif not player.is_playing() and len(player.queue) < 1:
+                  # If the player is not playing, not paused, and the queue is empty, start playing the track.
                   await player.play(tracks[0])
                   curr_track = player.current
                   embed = await self.create_now_playing_embed(ctx, curr_track)
                   message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
+              else:
+                  player.queue(tracks[0])
+                  embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
+                  embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
+                  embed.set_thumbnail(url=tracks[0].thumb)
+                  await ctx.send(embed=embed)
             
   @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
   @commands.guild_only()
