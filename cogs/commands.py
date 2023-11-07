@@ -15,9 +15,9 @@ class MusicCommands(commands.Cog):
       hours, remainder = divmod(seconds, 3600)
       minutes, seconds = divmod(remainder, 60)
       if hours > 0:
-          return f"`{int(hours)}:{int(minutes)}:{int(seconds)}`"
+          return f"`{int(hours)}:{int(minutes:02d}:{seconds:02d}`"
       else:
-          return f"`{int(minutes)}:{int(seconds)}`"
+          return f"`{int(minutes:02d}:{seconds:02d}`"
 
   async def create_now_playing_embed(self, ctx, track):
     try:
