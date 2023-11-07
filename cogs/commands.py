@@ -116,7 +116,7 @@ class MusicCommands(commands.Cog):
             await ctx.send(f"Track queued from spotify. {track.title}")
     except Exception as e:
         print(f"An error occurred: {e}")
-        await ctx.send("An error occurred while connecting to spotify.")
+        message = await ctx.send("An error occurred while connecting to spotify.\nhttps://downdetector.co.uk/status/spotify/")
             
   @commands.hybrid_command(name="lofi", description="Play lofi radio.")
   @commands.guild_only()
