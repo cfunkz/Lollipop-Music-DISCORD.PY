@@ -31,8 +31,9 @@ class MusicCommands(commands.Cog):
         embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{volume}/100```", inline=True)
         embed.set_footer(text=f"{len(player.queue)} songs in queue.")
         return embed
-    except:
-        return await ctx.send("Error making embed")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        await ctx.send("An error occurred while searching for tracks.")
   
   @commands.guild_only()
   @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
