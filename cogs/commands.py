@@ -97,7 +97,7 @@ class MusicCommands(commands.Cog):
                   await ctx.send(embed=embed)
     except Exception as e:
         print(f"An error occurred: {e}")
-        await ctx.send("An error occurred while searching for tracks.")
+        return await ctx.send("An error occurred while searching for tracks.")
             
   @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
   @commands.guild_only()
