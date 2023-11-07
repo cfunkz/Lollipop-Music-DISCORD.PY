@@ -87,6 +87,32 @@ class MusicCommands(commands.Cog):
       except Exception as e:
           print(f"An error occurred: {e}")
           await ctx.send("An error occurred while searching for tracks.")
+        
+  @commands.guild_only()
+  @commands.hybrid_command(name="spotify", description="Add music to queue with `/spotify <url>`")
+  async def _spotify(ctx: commands.Context, *, search: str) -> None:
+      if not ctx.guild.voice_client:
+          vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+      else:
+          vc: wavelink.Player = ctx.guild.voice_client
+      # Check the search to see if it matches a valid Spotify URL...
+      decoded = spotify.decode_url(search)
+      if not decoded or decoded['type'] is not spotify.SpotifySearchType.track:
+          await ctx.send('Only Spotify Track URLs are valid.')
+          return
+      # Set autoplay to True. This can be disabled at anytime...
+      vc.autoplay = True
+      tracks: list[spotify.SpotifyTrack] = await spotify.SpotifyTrack.search(search)
+      if not tracks:
+          await ctx.send('This does not appear to be a valid Spotify URL.')
+          return
+      track: spotify.SpotifyTrack = tracks[0]
+      # IF the player is not playing immediately play the song...
+      # otherwise put it in the queue...
+      if not vc.is_playing() or not vc.is_paused():
+          await vc.play(track, populate=True)
+      else:
+          await vc.queue.put_wait(track)
             
   @commands.hybrid_command(name="lofi", description="Play lofi radio.")
   @commands.guild_only()
