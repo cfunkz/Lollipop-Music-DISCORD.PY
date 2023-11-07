@@ -104,7 +104,7 @@ class PlayingView(View):
             self.player.queue.put_at_front(curr_track)
             await self.player.play(prev_track)
             await asyncio.sleep(1)
-            await interaction.response.send_message(f"```⏮️ Playing **{prev_track.title}**```", ephemeral=True)
+            await interaction.response.send_message(f"```⏮️ Playing {prev_track.title}```", ephemeral=True)
       except:
         return await interaction.response.send_message("```⛔ Error! No previous track or not connected.```", ephemeral=True)
   
@@ -129,7 +129,7 @@ class PlayingView(View):
       if self.player and len(self.player.queue) > 0:
           next_track = self.player.queue[0]
           await self.player.stop(force=True)
-          await interaction.response.send_message(f"```⏭️ Playing **{next_track.title}**```", ephemeral=True)
+          await interaction.response.send_message(f"```⏭️ Playing {next_track.title}```", ephemeral=True)
           await asyncio.sleep(1)
       else:
           return await interaction.response.send_message("```⛔ Error! No next track or not connected.```", ephemeral=True)
