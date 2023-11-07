@@ -35,7 +35,7 @@ class MusicCommands(commands.Cog):
         return await ctx.send("Error making embed")
   
   @commands.guild_only()
-  @commands.hybrid_command(name="play", description="Add music to queue with /play <url>")
+  @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
   async def _play(self, ctx, *, query):
       channel = ctx.author.voice.channel
       tracks: list[wavelink.YouTubeTrack] = await wavelink.YouTubeTrack.search(query)
