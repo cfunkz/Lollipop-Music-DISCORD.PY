@@ -301,7 +301,7 @@ class MusicCommands(commands.Cog):
       guild_count = len(self.bot.guilds)
       invite_link = discord.utils.oauth_url(self.bot.user.id, permissions=discord.Permissions(permissions=964525804865))
       server_link = "https://discord.gg/atlasdev"
-      embed=Embed(title="About", description="I'm a bot built with python.", color=discord.Color.green())
+      embed=Embed(title="About", description="I'm a bot built with Python and Wavelink.", color=discord.Color.green())
       embed.add_field(name="Invite", value=invite_link)
       embed.add_field(name="Support", value=server_link)
       await ctx.send(embed=embed, view=InviteButton(str(invite_link)))
