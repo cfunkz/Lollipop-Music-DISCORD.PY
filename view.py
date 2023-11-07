@@ -50,7 +50,6 @@ class PlaylistPlayingView(View):
 
   async def on_timeout(self):
       self.stop()
-      await self.message.delete()
 
   @button(label="ADD SONG", style=discord.ButtonStyle.grey, emoji="🎵")
   async def add_one2(self, interaction: discord.Interaction, button: discord.ui.Button):
