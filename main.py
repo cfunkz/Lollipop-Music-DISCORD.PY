@@ -15,8 +15,8 @@ class Bot(commands.Bot):
         await wavelink.NodePool.connect(client=self, nodes=[node])
         print("Lavalink Connected!")
         await self.load_cogs()  # Call your load_cogs function here
-        #synced = await self.tree.sync()
-        #print(f"{len(synced)}")
+        synced = await self.tree.sync()
+        print(f"{len(synced)}")
 
     async def load_cogs(self): #Load the cogs
       cogs = ['commands']
