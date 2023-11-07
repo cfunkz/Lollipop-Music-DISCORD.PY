@@ -301,7 +301,9 @@ class MusicCommands(commands.Cog):
       guild_count = len(self.bot.guilds)
       invite_link = discord.utils.oauth_url(self.bot.user.id, permissions=discord.Permissions(permissions=964525804865))
       server_link = "https://discord.gg/atlasdev"
-      embed=Embed(description="[Invite Me](" + invite_link + ") to your server!\n[Support](" + server_link + ")\n\n I'm a bot built with python by **cfunkz#6969**.", color=discord.Color.green())
+      embed=Embed(title="About", description="I'm a bot built with python.", color=discord.Color.green())
+      embed.add_field(name="Invite", value=invite_link)
+      embed.add_field(name="Support", value=server_link)
       await ctx.send(embed=embed, view=InviteButton(str(invite_link)))
 
   @commands.hybrid_command(name='help', description="Brings out the help panel or view command description with `/help <command name>`")
