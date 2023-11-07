@@ -164,7 +164,7 @@ class MusicCommands(commands.Cog):
       if player and len(player.queue.history) > 0:
           prev_track = player.queue.history[-2]  # Get the last song in the history
           await player.play(prev_track)
-          await ctx.send(f"```Playing **{prev_track.title}**```")
+          await ctx.send(f"```Playing {prev_track.title}```")
       else:
           await ctx.send("```⛔ No previous track to play.```")
         
