@@ -35,7 +35,7 @@ class MusicCommands(commands.Cog):
         return await ctx.send("Error making embed")
   
   @commands.guild_only()
-  @commands.hybrid_command(name="play")
+  @commands.hybrid_command(name="play", description="Add music to queue with /play <url>")
   async def _play(self, ctx, *, query):
       channel = ctx.author.voice.channel
       tracks: list[wavelink.YouTubeTrack] = await wavelink.YouTubeTrack.search(query)
@@ -84,7 +84,7 @@ class MusicCommands(commands.Cog):
                   embed = await self.create_now_playing_embed(ctx, curr_track)
                   message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
             
-  @commands.command(name="lofi")  # Use @commands.command instead of @commands.hybrid_command
+  @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
   @commands.guild_only()
   async def _lofi(self, ctx):
       search = "https://www.youtube.com/watch?v=IRp0zhUFi-M"
@@ -98,7 +98,6 @@ class MusicCommands(commands.Cog):
         return
       track: wavelink.YouTubeTrack = tracks[0]
       embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```LOFI RADIO```", color=discord.Color.blue())
-      embed.set_image(url=track.thumb)
       embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"```STREAM```", inline=True)
       embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{vc.volume}/100```", inline=True)
       embed.set_footer(text=f"{len(vc.queue)} songs in queue.")
@@ -106,7 +105,7 @@ class MusicCommands(commands.Cog):
       await vc.play(track)
 
   @commands.guild_only()
-  @commands.hybrid_command(name="nowplaying")
+  @commands.hybrid_command(name="nowplaying", description="Show current player with current song playing.")
   async def _nowplaying(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player and player.is_playing:
@@ -118,7 +117,7 @@ class MusicCommands(commands.Cog):
           await ctx.send('Nothing is currently playing.')
 
   @commands.guild_only()
-  @commands.command(name="queue")
+  @commands.command(name="queue", description="View the top songs in the queue.")
   async def _queue(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if not player or not player.is_connected:
@@ -141,7 +140,7 @@ class MusicCommands(commands.Cog):
       await ctx.send(embed=embed)
   
   @commands.guild_only()
-  @commands.hybrid_command(name="skip")
+  @commands.hybrid_command(name="skip", description="Skip a song.")
   async def _skip(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player and player.is_playing():
@@ -151,7 +150,7 @@ class MusicCommands(commands.Cog):
           await ctx.send("Nothing is currently playing.")
         
   @commands.guild_only()
-  @commands.hybrid_command(name="previous")
+  @commands.hybrid_command(name="previous", description="View previous song.")
   async def _previous(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player and len(player.queue.history) > 0:
@@ -162,7 +161,7 @@ class MusicCommands(commands.Cog):
           await ctx.send("No previous track to play.")
         
   @commands.guild_only()
-  @commands.hybrid_command(name="clear")
+  @commands.hybrid_command(name="clear", description="Clear all the songs from queue.")
   async def _clearqueue(self, ctx):
     player: wavelink.Player = ctx.guild.voice_client
     if player:
@@ -172,7 +171,7 @@ class MusicCommands(commands.Cog):
         await ctx.send("No queue to clear!")
       
   @commands.guild_only()
-  @commands.hybrid_command(name="shuffle")
+  @commands.hybrid_command(name="shuffle", description="Shuffle all the songs in the queue.")
   async def _shuffle(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
@@ -182,7 +181,7 @@ class MusicCommands(commands.Cog):
         return await ctx.send("The bot is disconnected.")
         
   @commands.guild_only()
-  @commands.hybrid_command(name="pause")
+  @commands.hybrid_command(name="pause", description="Pause the current playing song.")
   async def _pause(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
@@ -192,7 +191,7 @@ class MusicCommands(commands.Cog):
         return await ctx.send("The bot is disconnected.")
         
   @commands.guild_only()
-  @commands.hybrid_command(name="resume")
+  @commands.hybrid_command(name="resume", description="Resume the current playing song.")
   async def _resume(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
@@ -202,7 +201,7 @@ class MusicCommands(commands.Cog):
         return await ctx.send("The bot is disconnected.")
         
   @commands.guild_only()
-  @commands.hybrid_command(name="stop")
+  @commands.hybrid_command(name="stop", description="Disconnect bot from the voice channel.")
   async def _disconnect(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
@@ -212,7 +211,7 @@ class MusicCommands(commands.Cog):
         return await ctx.send("The bot not connected.")
         
   @commands.guild_only()
-  @commands.hybrid_command(name="volume")
+  @commands.hybrid_command(name="volume", description="Set the volume for the bot from 0% to 100%.")
   async def _vol(self, ctx, volume: int):
       player: wavelink.Player = ctx.guild.voice_client
       if volume > 100:
@@ -223,7 +222,7 @@ class MusicCommands(commands.Cog):
       await ctx.send(f"```Volume set to %{volume}```")
 
   @commands.guild_only()
-  @commands.hybrid_command(name="repeatall")
+  @commands.hybrid_command(name="repeatall", description="Repeat the queue.")
   async def _loopall(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
@@ -237,7 +236,7 @@ class MusicCommands(commands.Cog):
         await ctx.send(f"No player connected.")
 
   @commands.guild_only()
-  @commands.hybrid_command(name="repeat")
+  @commands.hybrid_command(name="repeat", description="Repeat the current song.")
   async def _loop(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
@@ -260,7 +259,7 @@ class MusicCommands(commands.Cog):
       embed.add_field(name='420 GUILDS', value=guild_count)
       await ctx.send(embed=embed, view=InviteButton(str(invite_link)))
 
-  @commands.hybrid_command(name='help', description='Brings out help panel or help for specific command e.g., `420 help start`', brief='Help Panel')
+  @commands.hybrid_command(name='help', description="Brings out the help panel or view command description with `/help <command name>`")
   @commands.cooldown(1, 1, commands.BucketType.user)
   async def _help(self, ctx, *, command_or_item=None):
       if command_or_item:
@@ -283,7 +282,7 @@ class MusicCommands(commands.Cog):
       embed.set_footer(text="Type /help <command name> to get the description of a specific command")
       message = await ctx.send(embed=embed, ephemeral=True)
 
-  @commands.hybrid_command(name="ping")
+  @commands.hybrid_command(name="ping", description="Pings the bot for its latency.")
   async def _ping(self, ctx):
     # Measure the time before the API call
     start_time = time.time()
