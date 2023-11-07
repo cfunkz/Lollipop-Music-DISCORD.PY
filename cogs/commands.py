@@ -38,6 +38,8 @@ class MusicCommands(commands.Cog):
   @commands.guild_only()
   @commands.hybrid_command(name="join")
   async def _connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel | None = None):
+      node = wavelink.NodePool.get_node()
+      player = node.get_player(ctx.guild.id)
       try:
           channel = channel or ctx.author.channel.voice
       except AttributeError:
