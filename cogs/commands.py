@@ -12,12 +12,12 @@ class MusicCommands(commands.Cog):
       self.bot = bot
 
   async def format_time(self, seconds):
-    hours, remainder = divmod(seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    if hours > 0:
-        return f"`{int(hours)}:{int(minutes)}:{int(seconds)}`"
-    else:
-        return f"`{int(minutes)}:{int(seconds)}`"
+      hours, remainder = divmod(seconds, 3600)
+      minutes, seconds = divmod(remainder, 60)
+      if hours > 0:
+          return f"`{int(hours)}:{minutes:02d}:{seconds:02d}`"
+      else:
+          return f"`{minutes:02d}:{seconds:02d}`"
 
   async def create_now_playing_embed(self, ctx, track):
     try:
