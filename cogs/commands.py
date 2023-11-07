@@ -91,7 +91,7 @@ class MusicCommands(commands.Cog):
         
   @commands.guild_only()
   @commands.hybrid_command(name="spotify", description="Add music to queue with `/spotify <url>`")
-  async def _spotify(ctx: commands.Context, *, search: str) -> None:
+  async def _spotify(self, ctx: commands.Context, *, search: str) -> None:
       if not ctx.guild.voice_client:
           vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
       else:
