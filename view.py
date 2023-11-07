@@ -138,11 +138,11 @@ class PlayingView(View):
     async def _shuffle(self, interaction: discord.Interaction, button: discord.ui.Button):
       if interaction.user.id != self.user_id:
         return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
-      if self.player:
+      if self.player and len(self.player.queue) > 0:
           self.player.queue.shuffle()
           await interaction.response.send_message("```🔀 Queue Shuffled.```")
       else:
-          return await interaction.response.send_message("```⛔ Error! Not connected```", ephemeral=True)
+          return await interaction.response.send_message("```⛔ Error! No queue or not connected```", ephemeral=True)
 
     @button(style=discord.ButtonStyle.grey, emoji="🔁", row=0)
     async def _repeat(self, interaction: discord.Interaction, button: discord.ui.Button):
