@@ -50,13 +50,13 @@ class MusicCommands(commands.Cog):
           embed = Embed(title="⚠️ Warning!", description=f"Do you want to add \n`{track.title}`\n\n**Or**\n\n`{len(playlist.tracks)}` songs to the queue")
           embed.set_thumbnail(url=track.thumb)
           await ctx.send(embed=embed, view=PlaylistView(ctx, player, playlist, track))
-      elif player.is_playing() and not player.paused:
+      elif player.is_playing() and not player.is_paused():
           player.queue(tracks[0])
           embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
           embed.set_footer(text=f"{len(player.queue)} songs in the queue")
           embed.set_thumbnail(url=tracks[0].thumb)
           await ctx.send(embed=embed)
-      elif not player.is_playing() and not player.paused and len(player.queue) == 0:
+      elif not player.is_playing() and not player.is_paused() and len(player.queue) == 0:
           await player.play(tracks[0])
           curr_track = player.current
           embed = await self.create_now_playing_embed(ctx, curr_track)
