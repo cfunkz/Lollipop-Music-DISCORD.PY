@@ -33,11 +33,12 @@ class MusicCommands(commands.Cog):
         return embed
     except Exception as e:
         print(f"An error occurred: {e}")
-        await ctx.send("An error occurred while searching for tracks.")
+        await ctx.send("An error occurred while making embed.")
   
   @commands.guild_only()
   @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
   async def _play(self, ctx, *, query):
+    try:
       channel = ctx.author.voice.channel
       if not channel:
           await ctx.send("```⛔ You need to be in voice channel```")
@@ -94,6 +95,9 @@ class MusicCommands(commands.Cog):
                   embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
                   embed.set_thumbnail(url=tracks[0].thumb)
                   await ctx.send(embed=embed)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        await ctx.send("An error occurred while searching for tracks.")
             
   @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
   @commands.guild_only()
