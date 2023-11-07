@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import wavelink
+from wavelink.ext import spotify
 from discord import Embed
 from view import PlaylistView, PlaylistPlayingView, PlayingView, InviteButton
 import asyncio
