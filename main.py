@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import wavelink
-from config import dtoken, ip_add, password, freeURL, freePASS
+from config import dtoken, freeURL, freePASS
 
 intents = discord.Intents.all()
 
