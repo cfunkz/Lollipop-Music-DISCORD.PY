@@ -19,20 +19,17 @@ class MusicCommands(commands.Cog):
         return f"`{int(minutes)}:{int(seconds)}`"
 
   async def create_now_playing_embed(self, ctx, track):
-    try:
-        player: wavelink.Player = ctx.guild.voice_client
-        volume = player.volume
-        duration_in_seconds = track.length / 1000  # Convert milliseconds to seconds
-        current_time = player.position / 1000  # Convert milliseconds to seconds
-        time = await self.format_time(duration_in_seconds)
-        embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```{track.title}```", color=discord.Color.blue())
-        embed.set_image(url=track.thumb)
-        embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"``{time}``", inline=True)
-        embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{volume}/100```", inline=True)
-        embed.set_footer(text=f"{len(player.queue)} songs in queue.")
-        return embed
-    except:
-        return await ctx.send("Error making embed")
+      player: wavelink.Player = ctx.guild.voice_client
+      volume = player.volume
+      duration_in_seconds = track.length / 1000  # Convert milliseconds to seconds
+      current_time = player.position / 1000  # Convert milliseconds to seconds
+      time = await self.format_time(duration_in_seconds)
+      embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```{track.title}```", color=discord.Color.blue())
+      embed.set_image(url=track.thumb)
+      embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"``{time}``", inline=True)
+      embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{volume}/100```", inline=True)
+      embed.set_footer(text=f"{len(player.queue)} songs in queue.")
+      return embed
   
   @commands.guild_only()
   @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
@@ -72,14 +69,14 @@ class MusicCommands(commands.Cog):
               embed.set_thumbnail(url=track.thumb)
               await ctx.send(embed=embed, view=PlaylistPlayingView(ctx, player, playlist, track))
           else:
-              if player.is_playing() and not player.paused:
+              if player.is_playing():
                   # The player is currently playing and not paused, so we can queue the track.
                   player.queue(tracks[0])
                   embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
                   embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
                   embed.set_thumbnail(url=tracks[0].thumb)
                   await ctx.send(embed=embed)
-              elif not player.is_playing() and not player.paused and len(player.queue) == 0:
+              elif not player.is_playing() and len(player.queue) == 0:
                   # If the player is not playing, not paused, and the queue is empty, start playing the track.
                   await player.play(tracks[0])
                   curr_track = player.current
