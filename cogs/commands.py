@@ -77,18 +77,19 @@ class MusicCommands(commands.Cog):
                   embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
                   embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
                   embed.set_thumbnail(url=tracks[0].thumb)
-                  await ctx.send(embed=embed)
+                  return await ctx.send(embed=embed)
               elif player.is_paused() and len(player.queue) > 0:
                   player.queue(tracks[0])
                   embed = Embed(title="➕ Added to queue", description=f"`{tracks[0].title}`", color=discord.Color.blue())
                   embed.set_footer(text=f"{len(player.queue)} songs in the queue.")
                   embed.set_thumbnail(url=tracks[0].thumb)
-                  await ctx.send(embed=embed)
+                  return await ctx.send(embed=embed)
               else:
                   await player.play(tracks[0])
                   curr_track = player.current
                   embed = await self.create_now_playing_embed(ctx, curr_track)
                   message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
+                  return message
             
   @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
   @commands.guild_only()
