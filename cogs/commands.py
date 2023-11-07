@@ -4,15 +4,19 @@ import wavelink
 from discord import Embed
 from view import PlaylistView, PlaylistPlayingView, PlayingView, InviteButton
 import asyncio
-
+import time
 
 class MusicCommands(commands.Cog):
   def __init__(self, bot):
       self.bot = bot
 
   async def format_time(self, seconds):
-    minutes, seconds = divmod(seconds, 60)
-    return f"`{int(minutes)}:{int(seconds)}`"
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    if hours > 0:
+        return f"`{int(hours)}:{int(minutes)}:{int(seconds)}`"
+    else:
+        return f"`{int(minutes)}:{int(seconds)}`"
 
   async def create_now_playing_embed(self, ctx, track):
     try:
@@ -28,7 +32,7 @@ class MusicCommands(commands.Cog):
         embed.set_footer(text=f"{len(player.queue)} songs in queue.")
         return embed
     except:
-        return ctx.send("Error making embed")
+        return await ctx.send("Error making embed")
   
   @commands.guild_only()
   @commands.hybrid_command(name="play")
@@ -80,9 +84,30 @@ class MusicCommands(commands.Cog):
                   embed = await self.create_now_playing_embed(ctx, curr_track)
                   message = await ctx.send(embed=embed, view=PlayingView(ctx, player))
             
+  @commands.command(name="lofi")  # Use @commands.command instead of @commands.hybrid_command
+  @commands.guild_only()
+  async def _lofi(self, ctx):
+      search = "https://www.youtube.com/watch?v=IRp0zhUFi-M"
+      if not ctx.guild.voice_client:
+        vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
+      else:
+        vc: wavelink.Player = ctx.guild.voice_client
+      tracks: list[wavelink.YouTubeTrack] = await wavelink.YouTubeTrack.search(search)
+      if not tracks:
+        await ctx.send(f'Sorry I could not find any songs with search: `{search}`')
+        return
+      track: wavelink.YouTubeTrack = tracks[0]
+      embed = Embed(title="<a:onfire:1170817312975224893> Now playing", description=f"```LOFI RADIO```", color=discord.Color.blue())
+      embed.set_image(url=track.thumb)
+      embed.add_field(name="<a:spin:1170816054499491872> Duration", value=f"```STREAM```", inline=True)
+      embed.add_field(name="<a:movingspeaker:1170818120630403092> Volume", value=f"```{vc.volume}/100```", inline=True)
+      embed.set_footer(text=f"{len(vc.queue)} songs in queue.")
+      await ctx.send(embed=embed)
+      await vc.play(track)
+
   @commands.guild_only()
   @commands.hybrid_command(name="nowplaying")
-  async def nowplaying(self, ctx):
+  async def _nowplaying(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if player and player.is_playing:
           # Send the initial message
@@ -258,6 +283,22 @@ class MusicCommands(commands.Cog):
       embed.set_footer(text="Type /help <command name> to get the description of a specific command")
       message = await ctx.send(embed=embed, ephemeral=True)
 
+  @commands.hybrid_command(name="ping")
+  async def _ping(self, ctx):
+    # Measure the time before the API call
+    start_time = time.time()
+    # Make an API call. In this case, fetch a channel's information.
+    await self.bot.fetch_channel(ctx.channel.id)
+    # Measure the time after the API call
+    end_time = time.time()
+    # The difference (in milliseconds) is a rough estimate of the API response time.
+    api_latency = round((end_time - start_time) * 1000)
+    # bot.latency is in seconds, so convert to milliseconds
+    ws_latency = round(self.bot.latency * 1000)
+    embed = Embed(title="Latency")
+    embed.add_field(name="Ping", value=f"```{api_latency}ms```")
+    embed.add_field(name="Websocket", value=f"```{ws_latency}ms```")
+    await ctx.send(embed=embed)
 
 async def setup(bot):
     cog = MusicCommands(bot)
