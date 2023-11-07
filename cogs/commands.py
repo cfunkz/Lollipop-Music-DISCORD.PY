@@ -145,9 +145,9 @@ class MusicCommands(commands.Cog):
       player: wavelink.Player = ctx.guild.voice_client
       if player and player.is_playing():
           await player.stop(force=True)
-          await ctx.send("Skipped the current song.")
+          await ctx.send("```Skipped the current song.```")
       else:
-          await ctx.send("Nothing is currently playing.")
+          await ctx.send("```⛔ Nothing is currently playing.```")
         
   @commands.guild_only()
   @commands.hybrid_command(name="previous", description="View previous song.")
@@ -156,9 +156,9 @@ class MusicCommands(commands.Cog):
       if player and len(player.queue.history) > 0:
           prev_track = player.queue.history[-2]  # Get the last song in the history
           await player.play(prev_track)
-          await ctx.send(f"Playing previous track: `{prev_track.title}`")
+          await ctx.send(f"```Playing **{prev_track.title}**```")
       else:
-          await ctx.send("No previous track to play.")
+          await ctx.send("```⛔ No previous track to play.```")
         
   @commands.guild_only()
   @commands.hybrid_command(name="clear", description="Clear all the songs from queue.")
@@ -166,9 +166,9 @@ class MusicCommands(commands.Cog):
     player: wavelink.Player = ctx.guild.voice_client
     if player:
         player.queue.reset()
-        await ctx.send("Queue cleared!")
+        await ctx.send("```Queue cleared.```")
     else:
-        await ctx.send("No queue to clear!")
+        await ctx.send("```⛔ No queue to clear.```")
       
   @commands.guild_only()
   @commands.hybrid_command(name="shuffle", description="Shuffle all the songs in the queue.")
@@ -176,9 +176,9 @@ class MusicCommands(commands.Cog):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
         player.queue.shuffle()
-        await ctx.send("Queue Shuffled")
+        await ctx.send("```Queue Shuffled.```")
       else:
-        return await ctx.send("The bot is disconnected.")
+        return await ctx.send("```⛔ The bot is disconnected.```")
         
   @commands.guild_only()
   @commands.hybrid_command(name="pause", description="Pause the current playing song.")
@@ -188,7 +188,7 @@ class MusicCommands(commands.Cog):
         await player.pause()
         await ctx.send("Paused")
       else:
-        return await ctx.send("The bot is disconnected.")
+        return await ctx.send("```⛔ The bot is disconnected.```")
         
   @commands.guild_only()
   @commands.hybrid_command(name="resume", description="Resume the current playing song.")
@@ -198,7 +198,7 @@ class MusicCommands(commands.Cog):
         await player.resume()
         await ctx.send("Resumed.")
       else:
-        return await ctx.send("The bot is disconnected.")
+        return await ctx.send("```⛔ The bot is disconnected.```")
         
   @commands.guild_only()
   @commands.hybrid_command(name="stop", description="Disconnect bot from the voice channel.")
@@ -206,18 +206,18 @@ class MusicCommands(commands.Cog):
       player: wavelink.Player = ctx.guild.voice_client
       if player:
         await player.disconnect()
-        await ctx.send("```Disconnected```")
+        await ctx.send("```⛔ Disconnected```")
       else:
-        return await ctx.send("The bot not connected.")
+        return await ctx.send("```⛔ The bot is not connected.```")
         
   @commands.guild_only()
   @commands.hybrid_command(name="volume", description="Set the volume for the bot from 0% to 100%.")
   async def _vol(self, ctx, volume: int):
       player: wavelink.Player = ctx.guild.voice_client
       if volume > 100:
-          return await ctx.send("100% Is Max")
+          return await ctx.send("```⛔ 100% Is Max```")
       elif volume < 0:
-          return await ctx.send("0% Is Lowest")
+          return await ctx.send("```⛔ 0% Is Lowest```")
       await player.set_volume(volume)
       await ctx.send(f"```Volume set to %{volume}```")
 
@@ -228,12 +228,12 @@ class MusicCommands(commands.Cog):
       if player:
         if player.queue.loop_all == True:
             player.queue.loop_all = False
-            await ctx.send("Repeat all off.")
+            await ctx.send("```Repeat all off.```")
         else:
             player.queue.loop_all = True
-            await ctx.send("Repeat all on.")
+            await ctx.send("```Repeat all on.```")
       else:
-        await ctx.send(f"No player connected.")
+        await ctx.send(f"```⛔ No player connected.```")
 
   @commands.guild_only()
   @commands.hybrid_command(name="repeat", description="Repeat the current song.")
@@ -245,9 +245,9 @@ class MusicCommands(commands.Cog):
             await ctx.send("Repeat off.")
         else:
             player.queue.loop = True
-            await ctx.send("Repeat on.")
+            await ctx.send("```Repeat on.```")
       else:
-        await ctx.send(f"No player connected.") 
+        await ctx.send(f"```⛔ No player connected.```") 
 
   @commands.hybrid_command(name='about', description="Information about the bot.")
   @commands.cooldown(1, 15, commands.BucketType.user)
