@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import wavelink
+from wavelink.ext import spotify
 from config import dtoken, freeURL, freePASS
 
 intents = discord.Intents.all()
@@ -11,8 +12,12 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f'Logged in {self.user} | {self.user.id}')
+        sc = spotify.SpotifyClient(
+            client_id=spotifyUSER,
+            client_secret=spotifySECRET
+        )
         node: wavelink.Node = wavelink.Node(uri=freeURL, password=freePASS)
-        await wavelink.NodePool.connect(client=self, nodes=[node])
+        await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
         print("Lavalink Connected!")
         await self.load_cogs()  # Call your load_cogs function here
         #synced = await self.tree.sync()
