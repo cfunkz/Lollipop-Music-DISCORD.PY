@@ -96,18 +96,13 @@ class MusicCommands(commands.Cog):
           vc: wavelink.Player = await ctx.author.voice.channel.connect(cls=wavelink.Player)
       else:
           vc: wavelink.Player = ctx.guild.voice_client
-      # Check the search to see if it matches a valid Spotify URL...
-      decoded = spotify.decode_url(search)
-      if not decoded or decoded['type'] is not spotify.SpotifySearchType.track:
-          await ctx.send('Only Spotify Track URLs are valid.')
-          return
       # Set autoplay to True. This can be disabled at anytime...
       vc.autoplay = True
-      tracks: list[spotify.SpotifyTrack] = await spotify.SpotifyTrack.search(search)
+      tracks = await spotify.SpotifyTrack.search(search)
       if not tracks:
           await ctx.send('This does not appear to be a valid Spotify URL.')
           return
-      track: spotify.SpotifyTrack = tracks[0]
+      track = tracks[0]
       # IF the player is not playing immediately play the song...
       # otherwise put it in the queue...
       if not vc.is_playing() or not vc.is_paused():
