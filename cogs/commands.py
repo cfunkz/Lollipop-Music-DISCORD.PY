@@ -88,7 +88,7 @@ class MusicCommands(commands.Cog):
           print(f"An error occurred: {e}")
           await ctx.send("An error occurred while searching for tracks.")
             
-  @commands.command(name="lofi", description="Play lofi radio.")  # Use @commands.command instead of @commands.hybrid_command
+  @commands.hybrid_command(name="lofi", description="Play lofi radio.")
   @commands.guild_only()
   async def _lofi(self, ctx):
       search = "https://www.youtube.com/watch?v=IRp0zhUFi-M"
@@ -121,7 +121,7 @@ class MusicCommands(commands.Cog):
           await ctx.send('Nothing is currently playing.')
 
   @commands.guild_only()
-  @commands.command(name="queue", description="View the top songs in the queue.")
+  @commands.hybrid_command(name="queue", description="View the top songs in the queue.")
   async def _queue(self, ctx):
       player: wavelink.Player = ctx.guild.voice_client
       if not player or not player.is_connected:
