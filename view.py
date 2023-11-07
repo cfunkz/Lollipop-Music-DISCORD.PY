@@ -104,7 +104,7 @@ class PlayingView(View):
             self.player.queue.put_at_front(curr_track)
             await self.player.play(prev_track)
             await asyncio.sleep(1)
-            await interaction.response.send_message(f"Playing previous track: `{prev_track.title}`", ephemeral=True)
+            await interaction.response.send_message(f"```⏮️ Playing **{prev_track.title}**```", ephemeral=True)
       except:
         return await interaction.response.send_message("```⛔ Error! No previous track or not connected.```", ephemeral=True)
   
@@ -115,10 +115,10 @@ class PlayingView(View):
             return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
         if not player.is_playing() and player.current:
             await player.resume()
-            await interaction.response.send_message("Resumed.", ephemeral=True)
+            await interaction.response.send_message("```▶️ Resumed.```", ephemeral=True)
         elif player.is_playing():
             await player.pause()
-            await interaction.response.send_message("Paused", ephemeral=True)
+            await interaction.response.send_message("```⏸️ Paused.```", ephemeral=True)
         else:
             return await interaction.response.send_message("```⛔ Error! No track or not connected.```", ephemeral=True)
 
@@ -129,7 +129,7 @@ class PlayingView(View):
       if self.player and len(self.player.queue) > 0:
           next_track = self.player.queue[0]
           await self.player.stop(force=True)
-          await interaction.response.send_message(f"Skipped to next one `{next_track.title}`", ephemeral=True)
+          await interaction.response.send_message(f"```⏭️ Playing **{next_track.title}**```", ephemeral=True)
           await asyncio.sleep(1)
       else:
           return await interaction.response.send_message("```⛔ Error! No next track or not connected.```", ephemeral=True)
@@ -140,7 +140,7 @@ class PlayingView(View):
         return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
       if self.player:
           self.player.queue.shuffle()
-          await interaction.response.send_message("Queue Shuffled")
+          await interaction.response.send_message("```🔀 Queue Shuffled.```")
       else:
           return await interaction.response.send_message("```⛔ Error! Not connected```", ephemeral=True)
 
@@ -151,10 +151,10 @@ class PlayingView(View):
       if self.player:
           if self.player.queue.loop:
               self.player.queue.loop = False
-              await interaction.response.send_message("Repeat off.", ephemeral=True)
+              await interaction.response.send_message("```🔁 Repeat off.```", ephemeral=True)
           else:
               self.player.queue.loop = True
-              await interaction.response.send_message("Repeat on.", ephemeral=True)
+              await interaction.response.send_message("```🔁 Repeat on.```", ephemeral=True)
       else:
           return await interaction.response.send_message("```⛔ Error! Not connected```", ephemeral=True)
 
@@ -165,9 +165,9 @@ class PlayingView(View):
       volume = self.player.volume
       new_volume = (volume - 10)
       if new_volume < 0:
-          return await interaction.response.send_message("0% Is Lowest")
+          return await interaction.response.send_message("```0% Is Lowest```")
       else:
-          await interaction.response.send_message(f"🔈 Decreased to {new_volume}%", ephemeral=True)
+          await interaction.response.send_message(f"```🔈 Decreased to {new_volume}%```", ephemeral=True)
           await self.player.set_volume(new_volume)
 
     @button(style=discord.ButtonStyle.grey, emoji="🔊", row=1)
@@ -177,7 +177,7 @@ class PlayingView(View):
       volume = self.player.volume
       new_volume = (volume + 10)
       if new_volume > 100:
-          return await interaction.response.send_message("100% Is Highest.")
+          return await interaction.response.send_message("```100% Is Highest.```")
       else:
           await interaction.response.send_message(f"```🔊 Increased to {new_volume}%```", ephemeral=True)
           await self.player.set_volume(new_volume)
@@ -185,14 +185,14 @@ class PlayingView(View):
     @button(style=discord.ButtonStyle.grey, emoji="🧹", row=1)
     async def _clearqueue(self, interaction: discord.Interaction, button: discord.ui.Button):
       if interaction.user.id != self.user_id:
-        return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
+        return await interaction.response.send_message("```Only command caller can do that.```", ephemeral=True)
       self.player.queue.reset()
-      await interaction.response.send_message("Queue cleared!", ephemeral=True)
+      await interaction.response.send_message("```Queue cleared!```", ephemeral=True)
 
     @button(style=discord.ButtonStyle.grey, emoji="🚫", row=1)
     async def _dc(self, interaction: discord.Interaction, button: discord.ui.Button):
       if interaction.user.id != self.user_id:
-        return await interaction.response.send_message("Only command caller can do that.", ephemeral=True)
+        return await interaction.response.send_message("```Only command caller can do that.```", ephemeral=True)
       await self.player.disconnect()
       await interaction.response.send_message("```🚫 Disconnected```", ephemeral=True)
 
