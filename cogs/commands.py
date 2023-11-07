@@ -39,6 +39,8 @@ class MusicCommands(commands.Cog):
   @commands.hybrid_command(name="play", description="Add music to queue with `/play <url>`")
   async def _play(self, ctx, *, query):
       channel = ctx.author.voice.channel
+      if not channel:
+          await ctx.send("```⛔ You need to be in voice channel```")
       tracks: list[wavelink.YouTubeTrack] = await wavelink.YouTubeTrack.search(query)
       player: wavelink.Player = ctx.guild.voice_client
       if not player:
