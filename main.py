@@ -38,9 +38,5 @@ discord.utils.setup_logging(level=logging.DEBUG, root=False)
 
 bot = Bot()
 
-@bot.event
-async def on_wavelink_node_ready(node: Node) -> None:
-    print(f"Node {node.id} is ready!")
-
 if __name__ == "__main__":
     asyncio.run(bot.start(dtoken))
