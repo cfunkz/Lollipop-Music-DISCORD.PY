@@ -4,6 +4,7 @@ import wavelink
 from wavelink.ext import spotify
 from config import dtoken, freeURL, freePASS, spotifyUSER, spotifySECRET, ip_add, secret
 import logging
+import asyncio
 
 intents = discord.Intents.all()
 
@@ -41,4 +42,5 @@ bot = Bot()
 async def on_wavelink_node_ready(node: Node) -> None:
     print(f"Node {node.id} is ready!")
 
-bot.run(dtoken)
+if __name__ == "__main__":
+    asyncio.run(bot.start(dtoken))
