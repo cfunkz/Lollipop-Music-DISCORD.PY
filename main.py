@@ -39,19 +39,8 @@ discord.utils.setup_logging(level=logging.INFO, root=False)
 bot = Bot()
 
 @bot.event
-async def on_wavelink_track_start(node, payload):
-        print(f"Track started: {payload.track.title}")
-@bot.event  
-async def on_wavelink_player_update(node, payload):
-        print(f"Player update - Volume: {payload.volume}, Position: {payload.position}")
-@bot.event
-async def on_wavelink_node_error(node, error):
-        print(f"Node error: {error}")
-@bot.event   
-async def on_wavelink_track_error(node, payload, error):
-        print(f"Track error: {error}")
-@bot.event
 async def on_wavelink_node_ready(node: wavelink.Node):
         print(f"Node {node.id} is ready!")
 
-bot.run(dtoken)
+if __name__ == "__main__":
+    asyncio.run(bot.start(dtoken))
