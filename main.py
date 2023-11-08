@@ -54,4 +54,4 @@ async def on_wavelink_track_error(node, payload, error):
 async def on_wavelink_node_ready(node: wavelink.Node):
         print(f"Node {node.id} is ready!")
 
-bot.start(dtoken)
+bot.run(dtoken)
