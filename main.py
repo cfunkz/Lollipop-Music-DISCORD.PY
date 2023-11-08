@@ -31,6 +31,8 @@ class Bot(commands.Bot):
               print(f'Loaded cog: {cog}')
           except Exception as e:
               print(f'Failed to load cog: {cog}\n\nError: {str(e)}')
+              
+discord.utils.setup_logging(level=logging.INFO, root=False)
 
 bot = Bot()
 bot.run(dtoken)
