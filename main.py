@@ -13,20 +13,20 @@ class Bot(commands.Bot):
         super().__init__(command_prefix=commands.when_mentioned_or('!'), intents=intents, activity = discord.Game(name="/help OR !help"), help_command=None)
 
 
-    async def on_wavelink_track_start(node, payload):
+    async def on_wavelink_track_start(self, node, payload):
         print(f"Track started: {payload.track.title}")
     
-    async def on_wavelink_player_update(node, payload):
+    async def on_wavelink_player_update(self, node, payload):
         print(f"Player update - Volume: {payload.volume}, Position: {payload.position}")
     
     # Handle errors
-    async def on_wavelink_node_error(node, error):
+    async def on_wavelink_node_error(self, node, error):
         print(f"Node error: {error}")
     
-    async def on_wavelink_track_error(node, payload, error):
+    async def on_wavelink_track_error(self, node, payload, error):
         print(f"Track error: {error}")
 
-    async def on_wavelink_node_ready(node: wavelink.Node):
+    async def on_wavelink_node_ready(self, node: wavelink.Node):
         print(f"Node {node.id} is ready!")
 
     async def on_ready(self):
