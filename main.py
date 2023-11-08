@@ -13,15 +13,15 @@ class Bot(commands.Bot):
         super().__init__(command_prefix=commands.when_mentioned_or('!'), intents=intents, activity = discord.Game(name="/help OR !help"), help_command=None)
 
     async def setup_hook(self) -> None:
-        node: wavelink.Node = wavelink.Node(uri=freeURL, secure=True, password=freePASS)
-        await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
-
-    async def on_ready(self):
-        print(f'Logged in {self.user} | {self.user.id}')
         sc = spotify.SpotifyClient(
             client_id=spotifyUSER,
             client_secret=spotifySECRET
         )
+        node: wavelink.Node = wavelink.Node(uri=freeURL, secure=True, password=freePASS)
+        await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
+
+    async def on_ready(self) -> None:
+        print(f'Logged in {self.user} | {self.user.id}')
         print("Lavalink Connected!")
         await self.load_cogs()
         #synced = await self.tree.sync()
