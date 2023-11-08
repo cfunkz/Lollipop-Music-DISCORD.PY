@@ -6,7 +6,7 @@ This is a Python Discord bot that provides music-related commands for your serve
 
 ## Features
 
-- Play music from YouTube, Soundcloud, HTTP, Vimeo & Soon Spotify.
+- Play music from YouTube, Soundcloud, HTTP, Vimeo & Spotify(no playlist support yet, only links with `spotify.com/track` will work).
 - Create and manage a queue of songs.
 - Display the currently playing song.
 - Control playback (skip, pause, resume, stop).
