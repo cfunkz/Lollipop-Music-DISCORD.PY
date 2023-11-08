@@ -108,10 +108,10 @@ class MusicCommands(commands.Cog):
         channel = ctx.author.voice.channel
         player: wavelink.Player = ctx.guild.voice_client
         if not player:
-            vc: wavelink.Player = await channel.connect(cls=wavelink.Player)
+            player: wavelink.Player = await channel.connect(cls=wavelink.Player)
         else:
             # Set autoplay to True. This can be disabled at anytime...
-            vc.autoplay = True
+            player.autoplay = True
             tracks = await spotify.SpotifyTrack.search(search)
             if not tracks:
                 await ctx.send('This does not appear to be a valid Spotify URL.')
@@ -119,13 +119,13 @@ class MusicCommands(commands.Cog):
             track = tracks[0]
             # IF the player is not playing immediately play the song...
             # otherwise put it in the queue...
-            if not vc.is_playing() or not vc.is_paused():
-                await vc.play(track, populate=True)
-                curr_track = vc.current
+            if not player.is_playing() or not vc.is_paused():
+                await player.play(track, populate=True)
+                curr_track = player.current
                 embed = await self.create_now_playing_embed(ctx, curr_track)
                 message = await ctx.send(embed=embed, view=PlayingView(ctx, vc))
             else:
-                await vc.queue.put_wait(track)
+                await player.queue.put_wait(track)
                 await ctx.send(f"Track queued from spotify. {track.title}")
     except Exception as e:
         print(f"An error occurred: {e}")
