@@ -17,7 +17,7 @@ class Bot(commands.Bot):
             client_id=spotifyUSER,
             client_secret=spotifySECRET
         )
-        node: wavelink.Node = wavelink.Node(uri=ip_add, password=secret)
+        node: wavelink.Node = wavelink.Node(uri=freeURL, secure=True, password=freePASS)
         await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
         print("Lavalink Connected!")
         await self.load_cogs()  # Call your load_cogs function here
