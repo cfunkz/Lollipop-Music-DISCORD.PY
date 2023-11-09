@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import wavelink
 from wavelink.ext import spotify
-from config import dtoken, freeURL, freePASS, spotifyUSER, spotifySECRET, ip_add, secret
+from config import dtoken, freeURL, freePASS, spotifyUSER, spotifySECRET, ip_add, password
 import logging
 import asyncio
 
@@ -17,7 +17,7 @@ class Bot(commands.Bot):
             client_id=spotifyUSER,
             client_secret=spotifySECRET
         )
-        node: wavelink.Node = wavelink.Node(uri=ip_add, password=secret)
+        node: wavelink.Node = wavelink.Node(uri=ip_add, password=password)
         await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
 
     async def on_ready(self) -> None:
