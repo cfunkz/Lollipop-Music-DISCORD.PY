@@ -23,7 +23,7 @@ Before you can run the Music Bot, make sure you have the following dependencies 
 - [Wavelink](https://github.com/PythonistaGuild/Wavelink)
 - [Lavalink](https://github.com/lavalink-devs/Lavalink) server running. VPS or Home PC.
 
-To install lavalink download on linux.
+Lavalink download on linux.
 
 - `sudo yum update`
 - `sudo amazon-linux-extras install java-openjdk11`
