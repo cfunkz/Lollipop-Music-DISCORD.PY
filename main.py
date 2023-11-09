@@ -17,7 +17,7 @@ class Bot(commands.Bot):
             client_id=spotifyUSER,
             client_secret=spotifySECRET
         )
-        node: wavelink.Node = wavelink.Node(uri=ip_add, secure=True, password=secret)
+        node: wavelink.Node = wavelink.Node(uri=ip_add, password=secret)
         await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
 
     async def on_ready(self) -> None:
