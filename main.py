@@ -17,7 +17,7 @@ class Bot(commands.Bot):
             client_id=spotifyUSER,
             client_secret=spotifySECRET
         )
-        node: wavelink.Node = wavelink.Node(uri=ip_add, secure=True, password=password)
+        node: wavelink.Node = wavelink.Node(uri=ip_add, password=password)
         await wavelink.NodePool.connect(client=self, nodes=[node], spotify=sc)
         print(f'Logged in {self.user} | {self.user.id}')
         print("Lavalink Connected!")
